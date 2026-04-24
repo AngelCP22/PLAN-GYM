@@ -1,0 +1,1030 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --y:#FFD000;--yd:#B8960A;--blk:#0a0a0a;--g1:#141414;--g2:#1e1e1e;--g3:#2a2a2a;--g4:#383838;
+  --light:#f0ede6;--muted:#777;--red:#ff5252;--green:#4cdb80;--blue:#4ca8ff;
+  --r:8px;--rl:12px;
+}
+body{font-family:'Barlow',sans-serif;background:var(--blk);color:var(--light);font-size:14px;line-height:1.5}
+#root{min-height:100vh;display:flex;flex-direction:column}
+
+/* ─── LOGIN ─── */
+#login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;background:radial-gradient(ellipse at 30% 20%,#1a1200 0%,var(--blk) 60%)}
+.login-box{background:var(--g1);border:1px solid var(--g3);border-radius:20px;padding:2.5rem 2rem;width:100%;max-width:380px;box-shadow:0 0 60px rgba(255,208,0,.06)}
+.logo-wrap{text-align:center;margin-bottom:2rem}
+.logo-icon{font-size:3rem;display:block;margin-bottom:.5rem}
+.logo-name{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;color:var(--y);display:block}
+.logo-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.fld{margin-bottom:1rem}
+.fld label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+.fld input,.fld select{width:100%;background:var(--g2);border:1px solid var(--g3);color:var(--light);padding:11px 14px;border-radius:var(--r);font-size:14px;font-family:'Barlow',sans-serif;transition:border .15s}
+.fld input:focus,.fld select:focus{outline:none;border-color:var(--y)}
+.fld select option{background:var(--g2)}
+.btn-main{width:100%;background:var(--y);color:var(--blk);border:none;padding:13px;border-radius:var(--r);font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Barlow Condensed',sans-serif;transition:background .15s}
+.btn-main:hover{background:#ffe033}
+.quick-wrap{margin-top:1.5rem}
+.quick-lbl{font-size:10px;color:var(--muted);text-align:center;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.75rem}
+.quick-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.qbtn{background:var(--g2);border:1px solid var(--g3);color:var(--light);padding:8px 4px;border-radius:var(--r);font-size:11px;cursor:pointer;text-align:center;transition:all .15s;font-family:'Barlow',sans-serif}
+.qbtn:hover{border-color:var(--y);color:var(--y)}
+.err{color:var(--red);font-size:12px;text-align:center;margin-top:8px;display:none}
+
+/* ─── LAYOUT ─── */
+#app{display:none;height:100vh;overflow:hidden;flex-direction:row}
+#app.show{display:flex}
+.sidebar{width:220px;background:var(--g1);border-right:1px solid var(--g2);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.sb-logo{padding:1.25rem 1rem;border-bottom:1px solid var(--g2)}
+.sb-logo .name{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:var(--y)}
+.sb-logo .sub{font-size:10px;color:var(--muted);margin-top:2px}
+.sb-nav{flex:1;padding:.5rem 0;overflow-y:auto}
+.nav-it{display:flex;align-items:center;gap:10px;padding:10px 1rem;cursor:pointer;color:var(--muted);font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;border-left:3px solid transparent;transition:all .15s;white-space:nowrap}
+.nav-it:hover{color:var(--light);background:rgba(255,208,0,.04)}
+.nav-it.on{color:var(--y);border-left-color:var(--y);background:rgba(255,208,0,.07)}
+.nav-icon{font-size:15px;flex-shrink:0}
+.sb-bot{padding:1rem;border-top:1px solid var(--g2)}
+.upill{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.av{width:34px;height:34px;background:var(--y);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--blk);flex-shrink:0;font-family:'Barlow Condensed',sans-serif}
+.ui-info .role{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.ui-info .uname{font-size:12px;font-weight:600;line-height:1.2}
+.btn-lo{width:100%;background:transparent;border:1px solid var(--g3);color:var(--muted);padding:6px;border-radius:var(--r);font-size:10px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all .15s}
+.btn-lo:hover{border-color:var(--red);color:var(--red)}
+
+.main{flex:1;overflow-y:auto;background:var(--blk);display:flex;flex-direction:column}
+.topbar{background:var(--g1);border-bottom:1px solid var(--g2);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.topbar-sub{font-size:11px;color:var(--muted)}
+.topbar-right{display:flex;gap:8px;align-items:center}
+.content{padding:1.25rem;flex:1}
+
+/* ─── PAGES ─── */
+.pg{display:none}.pg.on{display:block}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1.25rem}
+.scard{background:var(--g1);border:1px solid var(--g2);border-radius:var(--r);padding:.9rem 1rem}
+.scard .n{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--y);line-height:1}
+.scard .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+/* Cards */
+.card{background:var(--g1);border:1px solid var(--g2);border-radius:var(--rl);padding:1rem;margin-bottom:1rem}
+.card-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem;padding-bottom:.75rem;border-bottom:1px solid var(--g2)}
+.card-h h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+
+/* Table */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:8px 10px;text-align:left;border-bottom:1px solid var(--g2);white-space:nowrap}
+td{padding:10px;font-size:13px;border-bottom:1px solid #161616;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.015)}
+
+/* Badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.b-admin{background:rgba(255,82,82,.15);color:#ff7070}
+.b-trainer{background:rgba(255,208,0,.15);color:var(--y)}
+.b-client{background:rgba(76,219,128,.15);color:var(--green)}
+.b-active{background:rgba(76,168,255,.15);color:var(--blue)}
+.tag{display:inline-block;padding:2px 7px;background:rgba(255,208,0,.08);color:var(--y);border-radius:4px;font-size:10px;margin:1px}
+
+/* Buttons */
+.btn{padding:7px 14px;border-radius:var(--r);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .15s}
+.btn-y{background:var(--y);color:var(--blk)}
+.btn-y:hover{background:#ffe033}
+.btn-outline{background:transparent;border:1px solid var(--g3);color:var(--muted)}
+.btn-outline:hover{border-color:var(--y);color:var(--y)}
+.btn-red{background:rgba(255,82,82,.12);border:1px solid rgba(255,82,82,.25);color:var(--red)}
+.btn-red:hover{background:rgba(255,82,82,.2)}
+.btn-sm{padding:4px 10px;font-size:10px}
+.btn-green{background:rgba(76,219,128,.12);border:1px solid rgba(76,219,128,.25);color:var(--green)}
+
+/* Avatar */
+.av-row{display:flex;align-items:center;gap:8px}
+.av-sm{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--blk);flex-shrink:0;font-family:'Barlow Condensed',sans-serif}
+
+/* Progress bar */
+.pbar{background:var(--g3);border-radius:4px;height:5px;margin-top:4px}
+.pbar-f{height:5px;border-radius:4px;background:var(--y)}
+
+/* ─── PROGRAMA ─── */
+.prog-sec{margin-bottom:.75rem}
+.prog-sec-hd{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--y);margin-bottom:.5rem;display:flex;align-items:center;gap:8px}
+.prog-sec-hd::after{content:'';flex:1;height:1px;background:var(--g2)}
+.ex-header{display:grid;grid-template-columns:1fr 48px 55px 55px 55px;gap:6px;padding:4px 10px;font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px}
+.ex-row{display:grid;grid-template-columns:1fr 48px 55px 55px 55px;gap:6px;padding:9px 10px;border-bottom:1px solid #161616;align-items:center;font-size:12px;transition:background .1s}
+.ex-row:hover{background:rgba(255,208,0,.03)}
+.ex-row:last-child{border-bottom:none}
+.ex-name{font-weight:600}
+.ex-v{text-align:center;color:var(--muted)}
+.ex-hi{text-align:center;color:var(--y);font-weight:700;font-family:'Barlow Condensed',sans-serif;font-size:14px}
+.ex-obs{font-size:10px;color:#555;text-align:center}
+.kg-input{width:44px;background:var(--g2);border:1px solid var(--g3);color:var(--y);text-align:center;border-radius:5px;padding:3px;font-size:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.kg-input:focus{outline:none;border-color:var(--y)}
+
+/* ─── MEDIDAS ─── */
+.med-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.med-it{background:var(--g2);border-radius:var(--r);padding:10px 12px}
+.med-it label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px}
+.med-val{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;color:var(--y)}
+.med-val span{font-size:11px;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:400}
+.med-delta{font-size:10px;margin-top:2px}
+
+/* ─── PERFIL ─── */
+.profile-head{display:flex;align-items:center;gap:1rem;padding:1.25rem;background:var(--g1);border:1px solid var(--g2);border-radius:var(--rl);margin-bottom:1rem}
+.av-lg{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:var(--blk);font-family:'Barlow Condensed',sans-serif}
+.profile-name{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:1px}
+
+/* ─── MODAL ─── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--g1);border:1px solid var(--g3);border-radius:16px;padding:1.5rem;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--y);margin-bottom:1rem}
+.modal-footer{display:flex;gap:8px;margin-top:1rem;justify-content:flex-end}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* ─── NOTIF ─── */
+.notif{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--y);color:var(--blk);padding:.75rem 1.25rem;border-radius:var(--r);font-size:13px;font-weight:700;z-index:999;transform:translateY(100px);transition:transform .3s;letter-spacing:.5px}
+.notif.show{transform:translateY(0)}
+
+/* ─── ASISTENCIA ─── */
+.asist-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1rem}
+.asist-day{background:var(--g2);border-radius:6px;padding:8px 4px;text-align:center;font-size:10px;color:var(--muted)}
+.asist-day .num{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700;display:block;color:var(--light)}
+.asist-day.present{background:rgba(255,208,0,.12);border:1px solid rgba(255,208,0,.3)}
+.asist-day.present .num{color:var(--y)}
+.asist-day.absent{background:rgba(255,82,82,.08)}
+
+/* ─── ENTRENADORES ─── */
+.trainer-card{background:var(--g1);border:1px solid var(--g2);border-radius:var(--rl);padding:1rem;margin-bottom:.75rem}
+.trainer-head{display:flex;align-items:center;gap:10px;margin-bottom:.75rem}
+.trainer-clients{display:flex;flex-wrap:wrap;gap:5px;padding-left:44px}
+.client-chip{background:var(--g2);border:1px solid var(--g3);border-radius:5px;padding:3px 9px;font-size:11px;display:flex;align-items:center;gap:5px}
+
+/* ─── REPORTES ─── */
+.chart-bar{display:flex;align-items:flex-end;gap:6px;height:100px;padding-bottom:4px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bar-fill{width:100%;background:var(--y);border-radius:3px 3px 0 0;min-height:4px;transition:height .5s}
+.bar-lbl{font-size:9px;color:var(--muted);text-transform:uppercase}
+.bar-val{font-size:10px;color:var(--y);font-weight:700;font-family:'Barlow Condensed',sans-serif}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:640px){
+  .sidebar{width:56px}.sidebar .nav-it span:last-child,.sb-logo .sub,.sb-logo .name,.ui-info,.btn-lo{display:none}
+  .sidebar .nav-it{padding:10px 0;justify-content:center}.nav-icon{font-size:18px}
+  .sb-logo{padding:.75rem;text-align:center}.sb-bot{padding:.5rem}
+  .content{padding:.75rem}.topbar{padding:.75rem 1rem}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .two-col,.three-col{grid-template-columns:1fr}
+  .ex-header,.ex-row{grid-template-columns:1fr 40px 45px 45px}
+  .ex-obs{display:none}
+}
+</style>
+</head>
+<body>
+<div id="root">
+
+<!-- LOGIN -->
+<div id="login">
+<div class="login-box">
+  <div class="logo-wrap">
+    <span class="logo-icon">🏋️</span>
+    <span class="logo-name" id="gym-login-name">GymPro</span>
+    <span class="logo-sub">Sistema de Gestión Deportiva</span>
+  </div>
+  <div class="fld"><label>Correo electrónico</label><input id="li-email" type="email" placeholder="usuario@gym.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+  <div class="fld"><label>Contraseña</label><input id="li-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+  <button class="btn-main" onclick="doLogin()">Iniciar Sesión →</button>
+  <div id="li-err" class="err">Credenciales incorrectas. Intenta de nuevo.</div>
+  <div class="quick-wrap">
+    <div class="quick-lbl">Acceso rápido (demo)</div>
+    <div class="quick-btns">
+      <div class="qbtn" onclick="ql('admin')">👑<br>Admin</div>
+      <div class="qbtn" onclick="ql('trainer1')">🏆<br>Entrenador</div>
+      <div class="qbtn" onclick="ql('client1')">💪<br>Cliente</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="name" id="sb-gym-name">GymPro</div>
+    <div class="sub" id="sb-gym-sub">Sistema de Gestión</div>
+  </div>
+  <div class="sb-nav" id="sb-nav"></div>
+  <div class="sb-bot">
+    <div class="upill">
+      <div class="av" id="sb-av">AD</div>
+      <div class="ui-info">
+        <div class="role" id="sb-role">Admin</div>
+        <div class="uname" id="sb-name">Administrador</div>
+      </div>
+    </div>
+    <button class="btn-lo" onclick="logout()">⏏ Salir</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="tb-title">Dashboard</div>
+      <div class="topbar-sub" id="tb-sub">Resumen general</div>
+    </div>
+    <div class="topbar-right" id="tb-actions"></div>
+  </div>
+  <div class="content" id="content">
+
+    <!-- DASHBOARD -->
+    <div id="pg-dashboard" class="pg on">
+      <div class="stats-row" id="dash-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem" id="dash-grid">
+        <div class="card" id="dash-recent"></div>
+        <div class="card" id="dash-alerts"></div>
+      </div>
+      <div class="card" id="dash-table"></div>
+    </div>
+
+    <!-- CLIENTES -->
+    <div id="pg-clientes" class="pg">
+      <div class="card" id="cl-container"></div>
+    </div>
+
+    <!-- PROGRAMA -->
+    <div id="pg-programa" class="pg">
+      <div id="prog-tabs" style="display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap"></div>
+      <div id="prog-body"></div>
+    </div>
+
+    <!-- MEDIDAS -->
+    <div id="pg-medidas" class="pg">
+      <div id="med-body"></div>
+    </div>
+
+    <!-- ASISTENCIA -->
+    <div id="pg-asistencia" class="pg">
+      <div id="asist-body"></div>
+    </div>
+
+    <!-- ENTRENADORES -->
+    <div id="pg-entrenadores" class="pg">
+      <div class="stats-row" id="tr-stats"></div>
+      <div id="tr-body"></div>
+    </div>
+
+    <!-- REPORTES -->
+    <div id="pg-reportes" class="pg">
+      <div id="rep-body"></div>
+    </div>
+
+    <!-- PERFIL -->
+    <div id="pg-perfil" class="pg">
+      <div id="perf-body"></div>
+    </div>
+
+    <!-- CONFIG -->
+    <div id="pg-config" class="pg">
+      <div id="cfg-body"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+</div>
+
+<!-- MODALS -->
+<div id="m-user" class="modal-bg">
+<div class="modal">
+  <h3 id="m-user-title">Nuevo Usuario</h3>
+  <div class="fld"><label>Nombre completo</label><input id="mf-name" placeholder="Ej: Carlos Ramírez"/></div>
+  <div class="two-col">
+    <div class="fld"><label>Email</label><input id="mf-email" type="email" placeholder="email@gym.com"/></div>
+    <div class="fld"><label>Contraseña</label><input id="mf-pass" type="password" placeholder="••••••"/></div>
+  </div>
+  <div class="two-col">
+    <div class="fld"><label>Rol</label><select id="mf-role" onchange="toggleTrainerField()">
+      <option value="client">Cliente</option>
+      <option value="trainer">Entrenador</option>
+      <option value="admin">Admin</option>
+    </select></div>
+    <div class="fld" id="mf-trainer-wrap"><label>Entrenador asignado</label><select id="mf-trainer"></select></div>
+  </div>
+  <div class="two-col">
+    <div class="fld"><label>Objetivo</label><select id="mf-obj">
+      <option>Pérdida de peso</option><option>Ganancia muscular</option>
+      <option>Mantenimiento</option><option>Rendimiento deportivo</option><option>Rehabilitación</option>
+    </select></div>
+    <div class="fld"><label>Días/semana</label><select id="mf-dias">
+      <option>2 días</option><option>3 días</option><option>4 días</option>
+      <option>5 días</option><option>6 días</option>
+    </select></div>
+  </div>
+  <div class="three-col">
+    <div class="fld"><label>Edad</label><input id="mf-age" type="number" placeholder="25"/></div>
+    <div class="fld"><label>Peso (kg)</label><input id="mf-peso" type="number" placeholder="70"/></div>
+    <div class="fld"><label>Talla (cm)</label><input id="mf-talla" type="number" placeholder="170"/></div>
+  </div>
+  <div class="fld"><label>Observaciones</label><input id="mf-obs" placeholder="Notas del cliente..."/></div>
+  <div class="modal-footer">
+    <button class="btn btn-outline" onclick="closeModal('m-user')">Cancelar</button>
+    <button class="btn btn-y" onclick="saveUser()">Guardar Usuario</button>
+  </div>
+</div>
+</div>
+
+<div id="m-med" class="modal-bg">
+<div class="modal">
+  <h3>Registrar Medidas Corporales</h3>
+  <div class="three-col">
+    <div class="fld"><label>Peso (kg)</label><input id="mm-peso" type="number" placeholder="70"/></div>
+    <div class="fld"><label>% Grasa</label><input id="mm-grasa" type="number" placeholder="18"/></div>
+    <div class="fld"><label>% Músculo</label><input id="mm-musculo" type="number" placeholder="42"/></div>
+  </div>
+  <div class="three-col">
+    <div class="fld"><label>Pecho (cm)</label><input id="mm-pecho" type="number" placeholder="95"/></div>
+    <div class="fld"><label>Cintura (cm)</label><input id="mm-cintura" type="number" placeholder="78"/></div>
+    <div class="fld"><label>Cadera (cm)</label><input id="mm-cadera" type="number" placeholder="97"/></div>
+  </div>
+  <div class="three-col">
+    <div class="fld"><label>Brazo (cm)</label><input id="mm-brazo" type="number" placeholder="35"/></div>
+    <div class="fld"><label>Muslo (cm)</label><input id="mm-muslo" type="number" placeholder="55"/></div>
+    <div class="fld"><label>Pantorrilla (cm)</label><input id="mm-panto" type="number" placeholder="36"/></div>
+  </div>
+  <div class="fld"><label>Observaciones</label><input id="mm-obs" placeholder="Notas de la sesión..."/></div>
+  <div class="modal-footer">
+    <button class="btn btn-outline" onclick="closeModal('m-med')">Cancelar</button>
+    <button class="btn btn-y" onclick="saveMed()">Guardar Medidas</button>
+  </div>
+</div>
+</div>
+
+<div id="m-cfg" class="modal-bg">
+<div class="modal">
+  <h3>Configuración del Gimnasio</h3>
+  <div class="fld"><label>Nombre del Gimnasio</label><input id="cfg-name" placeholder="Ej: IronForce Gym"/></div>
+  <div class="fld"><label>Slogan</label><input id="cfg-slogan" placeholder="Tu mejor versión empieza aquí"/></div>
+  <div class="fld"><label>Dirección</label><input id="cfg-addr" placeholder="Av. Principal 123, Lima"/></div>
+  <div class="fld"><label>Teléfono</label><input id="cfg-tel" placeholder="+51 999 999 999"/></div>
+  <div class="fld"><label>Email de contacto</label><input id="cfg-email" placeholder="info@gym.com"/></div>
+  <div class="modal-footer">
+    <button class="btn btn-outline" onclick="closeModal('m-cfg')">Cancelar</button>
+    <button class="btn btn-y" onclick="saveCfg()">Guardar Cambios</button>
+  </div>
+</div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const GYM = {
+  name:'GymPro', slogan:'Sistema de Gestión Deportiva',
+  address:'Av. Ejercito 450, Miraflores, Lima', tel:'+51 999 123 456', email:'info@gympro.pe'
+};
+
+let USERS = [
+  {id:1,name:'Admin General',email:'admin@gym.com',pass:'admin123',role:'admin',obj:'Gestión',dias:'—',age:35,peso:75,talla:178,trainerId:null,active:true,obs:'Administrador principal',joined:'2024-01-15'},
+  {id:2,name:'Marco Torres',email:'marco@gym.com',pass:'gym123',role:'trainer',obj:'Rendimiento',dias:'6 días',age:28,peso:82,talla:182,trainerId:null,active:true,obs:'Especialista en fuerza y acondicionamiento',joined:'2024-02-01'},
+  {id:3,name:'Sofia Ríos',email:'sofia@gym.com',pass:'gym123',role:'trainer',obj:'Flexibilidad',dias:'5 días',age:25,peso:58,talla:165,trainerId:null,active:true,obs:'Especialista en yoga, pilates y crossfit',joined:'2024-03-10'},
+  {id:4,name:'Diego Mendoza',email:'diego@gym.com',pass:'gym123',role:'trainer',obj:'Cardio',dias:'5 días',age:30,peso:78,talla:175,trainerId:null,active:true,obs:'Especialista en cardio y pérdida de peso',joined:'2024-04-01'},
+  {id:5,name:'Luis Pérez',email:'client@gym.com',pass:'client123',role:'client',obj:'Pérdida de peso',dias:'3 días',age:32,peso:88,talla:174,trainerId:2,active:true,obs:'Pendiente de dieta personalizada',joined:'2025-01-10'},
+  {id:6,name:'Carla Vega',email:'carla@gym.com',pass:'gym123',role:'client',obj:'Ganancia muscular',dias:'4 días',age:27,peso:61,talla:163,trainerId:2,active:true,obs:'Buen progreso en sentadilla',joined:'2025-02-05'},
+  {id:7,name:'Ana Flores',email:'ana@gym.com',pass:'gym123',role:'client',obj:'Mantenimiento',dias:'3 días',age:35,peso:65,talla:160,trainerId:3,active:true,obs:'',joined:'2025-03-01'},
+  {id:8,name:'Roberto Cruz',email:'roberto@gym.com',pass:'gym123',role:'client',obj:'Rendimiento deportivo',dias:'5 días',age:22,peso:75,talla:179,trainerId:3,active:true,obs:'Futbolista amateur, trabaja explosividad',joined:'2025-03-15'},
+  {id:9,name:'Patricia Lara',email:'pati@gym.com',pass:'gym123',role:'client',obj:'Pérdida de peso',dias:'2 días',age:42,peso:72,talla:158,trainerId:4,active:false,obs:'Membresía vencida',joined:'2025-01-20'},
+  {id:10,name:'Juan Castillo',email:'juan@gym.com',pass:'gym123',role:'client',obj:'Rehabilitación',dias:'3 días',age:50,peso:80,talla:170,trainerId:4,active:true,obs:'Lesión de rodilla derecha, ejercicios sin impacto',joined:'2025-04-01'},
+];
+let nextId=11;
+
+const MEDIDAS = {
+  5:[
+    {fecha:'2026-01-10',peso:92,grasa:28,musculo:38,pecho:100,cintura:94,cadera:100,brazo:33,muslo:58,panto:36,obs:'Evaluación inicial'},
+    {fecha:'2026-02-10',peso:89,grasa:25,musculo:40,pecho:99,cintura:91,cadera:99,brazo:34,muslo:57,panto:36,obs:'Buen progreso'},
+    {fecha:'2026-03-10',peso:86,grasa:22,musculo:42,pecho:97,cintura:88,cadera:97,brazo:35,muslo:56,panto:37,obs:'Superó meta mensual'},
+    {fecha:'2026-04-10',peso:83,grasa:19,musculo:44,pecho:96,cintura:85,cadera:96,brazo:36,muslo:55,panto:37,obs:'Excelente evolución'},
+  ],
+  6:[
+    {fecha:'2026-02-05',peso:61,grasa:22,musculo:40,pecho:88,cintura:72,cadera:94,brazo:30,muslo:52,panto:33,obs:'Evaluación inicial'},
+    {fecha:'2026-03-05',peso:62,grasa:20,musculo:42,pecho:89,cintura:71,cadera:93,brazo:31,muslo:53,panto:34,obs:''},
+    {fecha:'2026-04-05',peso:63,grasa:18,musculo:44,pecho:90,cintura:70,cadera:93,brazo:32,muslo:54,panto:34,obs:'Ganando masa magra'},
+  ],
+};
+
+const PROGRAMAS = {
+  default:[
+    {sec:'🔥 Calentamiento',exs:[
+      {n:'Caminata en cinta',s:1,r:'10 min',kg:'—',obs:'Ritmo moderado'},
+      {n:'Movilidad articular',s:1,r:'5 min',kg:'—',obs:'Hombros, cadera, rodillas'},
+      {n:'Saltos jumping jack',s:2,r:'20 rep',kg:'—',obs:''},
+    ]},
+    {sec:'💪 Core',exs:[
+      {n:'Plancha abdominal',s:3,r:'45 seg',kg:'—',obs:'Alinear caderas'},
+      {n:'Crunch bicicleta',s:3,r:'20 rep',kg:'—',obs:''},
+      {n:'Elevación de piernas',s:3,r:'15 rep',kg:'—',obs:'Espalda pegada'},
+      {n:'Russian twist',s:3,r:'20 rep',kg:'5',obs:'Con disco'},
+    ]},
+    {sec:'🦵 Tren Inferior',exs:[
+      {n:'Sentadilla con barra',s:4,r:'12 rep',kg:'60',obs:'Talones al suelo'},
+      {n:'Prensa de piernas',s:3,r:'15 rep',kg:'80',obs:''},
+      {n:'Extensión de cuádriceps',s:3,r:'12 rep',kg:'30',obs:''},
+      {n:'Curl femoral acostado',s:3,r:'12 rep',kg:'25',obs:''},
+      {n:'Elevaciones de talón',s:4,r:'20 rep',kg:'40',obs:'Lento al bajar'},
+    ]},
+    {sec:'🏋️ Empuje (Pecho/Hombro/Tríceps)',exs:[
+      {n:'Press banca plano con barra',s:4,r:'10 rep',kg:'50',obs:''},
+      {n:'Press inclinado mancuernas',s:3,r:'12 rep',kg:'20',obs:''},
+      {n:'Aperturas con mancuernas',s:3,r:'15 rep',kg:'12',obs:'Ligero'},
+      {n:'Press militar con barra',s:3,r:'10 rep',kg:'35',obs:''},
+      {n:'Extensión tríceps polea',s:3,r:'15 rep',kg:'20',obs:''},
+    ]},
+    {sec:'🚣 Tracción (Espalda/Bíceps)',exs:[
+      {n:'Jalón al pecho en polea',s:4,r:'12 rep',kg:'45',obs:'Codos hacia abajo'},
+      {n:'Remo con barra',s:3,r:'10 rep',kg:'50',obs:''},
+      {n:'Remo en máquina',s:3,r:'12 rep',kg:'40',obs:''},
+      {n:'Curl bíceps con barra',s:3,r:'12 rep',kg:'20',obs:'No balancear'},
+      {n:'Curl martillo mancuernas',s:3,r:'10 rep',kg:'14',obs:''},
+    ]},
+    {sec:'🧘 Vuelta a la calma',exs:[
+      {n:'Estiramientos cadenas posterior',s:1,r:'5 min',kg:'—',obs:'Mantener 30 seg/postura'},
+      {n:'Respiración diafragmática',s:1,r:'3 min',kg:'—',obs:''},
+    ]},
+  ]
+};
+
+const ASISTENCIA = {
+  5:{
+    'Ene 2026':[1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,0],
+    'Feb 2026':[1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,0,1,0,1,0,0],
+    'Mar 2026':[0,1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,0,1,0,1,0,0,1,0,0,1],
+    'Abr 2026':[1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,0],
+  }
+};
+
+const MENUS={
+  admin:[
+    {id:'dashboard',ic:'📊',lb:'Dashboard'},
+    {id:'clientes',ic:'👥',lb:'Clientes'},
+    {id:'entrenadores',ic:'🏆',lb:'Entrenadores'},
+    {id:'programa',ic:'📋',lb:'Programa'},
+    {id:'medidas',ic:'📏',lb:'Medidas'},
+    {id:'asistencia',ic:'📅',lb:'Asistencia'},
+    {id:'reportes',ic:'📈',lb:'Reportes'},
+    {id:'config',ic:'⚙️',lb:'Configuración'},
+  ],
+  trainer:[
+    {id:'dashboard',ic:'📊',lb:'Dashboard'},
+    {id:'clientes',ic:'👥',lb:'Mis Clientes'},
+    {id:'programa',ic:'📋',lb:'Programa'},
+    {id:'medidas',ic:'📏',lb:'Medidas'},
+    {id:'asistencia',ic:'📅',lb:'Asistencia'},
+    {id:'perfil',ic:'👤',lb:'Mi Perfil'},
+  ],
+  client:[
+    {id:'dashboard',ic:'📊',lb:'Mi Inicio'},
+    {id:'programa',ic:'📋',lb:'Mi Programa'},
+    {id:'medidas',ic:'📏',lb:'Mis Medidas'},
+    {id:'asistencia',ic:'📅',lb:'Mi Asistencia'},
+    {id:'perfil',ic:'👤',lb:'Mi Perfil'},
+  ],
+};
+
+// ═══════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════
+let CU=null, activePage='dashboard';
+const $ = id => document.getElementById(id);
+const ini = n => n.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+const colors=['#FFD000','#4ca8ff','#4cdb80','#ff7070','#b47fff','#ff9f40'];
+const avColor = id => colors[id%colors.length];
+const notif=(msg,dur=2500)=>{const n=$('notif');n.textContent=msg;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),dur)};
+const closeModal=id=>{$(id).classList.remove('open')};
+const openModal=id=>{$(id).classList.add('open')};
+
+// ═══════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════
+const QUICK={admin:{e:'admin@gym.com',p:'admin123'},trainer1:{e:'marco@gym.com',p:'gym123'},client1:{e:'client@gym.com',p:'client123'}};
+function ql(k){const q=QUICK[k];$('li-email').value=q.e;$('li-pass').value=q.p;doLogin()}
+function doLogin(){
+  const e=$('li-email').value.trim(), p=$('li-pass').value.trim();
+  const u=USERS.find(x=>x.email===e&&x.pass===p);
+  if(!u){$('li-err').style.display='block';return}
+  $('li-err').style.display='none';CU=u;
+  $('login').style.display='none';$('app').classList.add('show');
+  initApp();
+}
+function logout(){CU=null;$('app').classList.remove('show');$('login').style.display='flex';$('li-email').value='';$('li-pass').value=''}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+function initApp(){
+  $('sb-av').textContent=ini(CU.name);
+  $('sb-av').style.background=avColor(CU.id);
+  $('sb-role').textContent=CU.role.toUpperCase();
+  $('sb-name').textContent=CU.name.split(' ')[0]+' '+CU.name.split(' ')[1];
+  $('sb-gym-name').textContent=GYM.name;
+  $('sb-gym-sub').textContent=GYM.slogan;
+  $('gym-login-name').textContent=GYM.name;
+  const menu=MENUS[CU.role];
+  $('sb-nav').innerHTML=menu.map(m=>`<div class="nav-it" id="ni-${m.id}" onclick="nav('${m.id}')"><span class="nav-icon">${m.ic}</span><span>${m.lb}</span></div>`).join('');
+  nav('dashboard');
+}
+
+function nav(pg){
+  activePage=pg;
+  document.querySelectorAll('.nav-it').forEach(x=>x.classList.remove('on'));
+  const ni=$('ni-'+pg);if(ni)ni.classList.add('on');
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
+  const p=$('pg-'+pg);if(p)p.classList.add('on');
+  const renders={dashboard:renderDash,clientes:renderClientes,programa:renderPrograma,medidas:renderMedidas,asistencia:renderAsistencia,entrenadores:renderEntrenadores,reportes:renderReportes,perfil:renderPerfil,config:renderConfig};
+  if(renders[pg])renders[pg]();
+}
+
+// ═══════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════
+function renderDash(){
+  const r=CU.role;
+  const all=USERS, clients=all.filter(u=>u.role==='client');
+  const trainers=all.filter(u=>u.role==='trainer');
+  const myClients=r==='trainer'?clients.filter(c=>c.trainerId===CU.id):r==='client'?[CU]:clients;
+
+  const titlesMap={admin:`Bienvenido, ${CU.name.split(' ')[0]}`,trainer:`Hola, ${CU.name.split(' ')[0]}`,client:`¡Hola, ${CU.name.split(' ')[0]}! 💪`};
+  const subMap={admin:'Vista completa del sistema',trainer:'Tus clientes y rendimiento',client:'Tu progreso de hoy'};
+  $('tb-title').textContent=titlesMap[r];$('tb-sub').textContent=subMap[r];$('tb-actions').innerHTML='';
+
+  let stats='';
+  if(r==='admin'){
+    const active=clients.filter(c=>c.active).length;
+    stats=`
+      <div class="scard"><div class="n">${clients.length}</div><div class="l">Total Clientes</div></div>
+      <div class="scard"><div class="n">${active}</div><div class="l">Activos</div></div>
+      <div class="scard"><div class="n">${trainers.length}</div><div class="l">Entrenadores</div></div>
+      <div class="scard"><div class="n">${clients.filter(c=>!c.trainerId).length}</div><div class="l">Sin Asignar</div></div>
+      <div class="scard"><div class="n">${USERS.length}</div><div class="l">Usuarios Totales</div></div>
+    `;
+  } else if(r==='trainer'){
+    const mc=myClients;
+    stats=`
+      <div class="scard"><div class="n">${mc.length}</div><div class="l">Mis Clientes</div></div>
+      <div class="scard"><div class="n">${mc.filter(c=>c.active).length}</div><div class="l">Activos</div></div>
+      <div class="scard"><div class="n">${mc.filter(c=>c.obj==='Pérdida de peso').length}</div><div class="l">Pérdida peso</div></div>
+      <div class="scard"><div class="n">${mc.filter(c=>c.obj==='Ganancia muscular').length}</div><div class="l">Ganancia musc.</div></div>
+    `;
+  } else {
+    const m=MEDIDAS[CU.id]||[];const last=m[m.length-1];
+    const tr=USERS.find(u=>u.id===CU.trainerId);
+    const dias=Object.values(ASISTENCIA[CU.id]||{}).flat().filter(x=>x===1).length;
+    stats=`
+      <div class="scard"><div class="n">${last?last.peso+'kg':'—'}</div><div class="l">Peso actual</div></div>
+      <div class="scard"><div class="n">${last?last.grasa+'%':'—'}</div><div class="l">% Grasa</div></div>
+      <div class="scard"><div class="n">${last?last.musculo+'%':'—'}</div><div class="l">% Músculo</div></div>
+      <div class="scard"><div class="n">${dias}</div><div class="l">Días entrend.</div></div>
+      <div class="scard"><div class="n">${tr?tr.name.split(' ')[0]:'—'}</div><div class="l">Mi Entrenador</div></div>
+    `;
+  }
+  $('dash-stats').innerHTML=stats;
+
+  // Recent activity
+  let recentHTML=`<div class="card-h"><h3>${r==='client'?'Mi último avance':'Actividad reciente'}</h3></div>`;
+  if(r==='client'){
+    const m=MEDIDAS[CU.id]||[];const last=m[m.length-1];const prev=m[m.length-2];
+    if(last){
+      const dp=(a,b,fld)=>{if(!b)return'';const d=a[fld]-b[fld];return`<span style="color:${d<0?'var(--green)':'var(--red)'}"> ${d>0?'+':''}${d.toFixed(0)}</span>`};
+      recentHTML+=`<div class="med-grid" style="grid-template-columns:1fr 1fr">
+        <div class="med-it"><label>Peso</label><div class="med-val">${last.peso}<span>kg</span></div>${prev?`<div class="med-delta">${dp(last,prev,'peso')} desde antes</div>`:''}</div>
+        <div class="med-it"><label>% Grasa</label><div class="med-val">${last.grasa}<span>%</span></div>${prev?`<div class="med-delta">${dp(last,prev,'grasa')} puntos</div>`:''}</div>
+      </div>`;
+    } else { recentHTML+=`<div style="text-align:center;padding:1.5rem;color:var(--muted)">Sin medidas aún. Pide a tu entrenador que registre tus medidas.</div>`; }
+  } else {
+    const list=myClients.slice(0,5);
+    if(list.length){
+      recentHTML+=list.map(u=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #161616">
+        <div class="av-row"><div class="av-sm" style="background:${avColor(u.id)}">${ini(u.name)}</div><div><div style="font-size:13px;font-weight:600">${u.name}</div><div style="font-size:10px;color:var(--muted)">${u.obj}</div></div></div>
+        <span class="badge ${u.active?'b-active':'b-admin'}">${u.active?'Activo':'Inactivo'}</span>
+      </div>`).join('');
+    } else recentHTML+=`<div style="text-align:center;padding:1.5rem;color:var(--muted)">Sin clientes asignados</div>`;
+  }
+  $('dash-recent').innerHTML=recentHTML;
+
+  // Alerts/tips
+  let alertHTML=`<div class="card-h"><h3>${r==='client'?'Consejos':'Alertas del Sistema'}</h3></div>`;
+  if(r==='admin'){
+    const sinAsignar=clients.filter(c=>!c.trainerId);
+    alertHTML+=sinAsignar.length?sinAsignar.map(u=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #161616;font-size:12px"><span>⚠️</span><span><b>${u.name}</b> sin entrenador</span></div>`).join(''):`<div style="color:var(--green);font-size:13px;padding:.5rem 0">✅ Todos los clientes tienen entrenador asignado</div>`;
+    const inactivos=clients.filter(c=>!c.active);
+    if(inactivos.length)alertHTML+=`<div style="color:var(--muted);font-size:12px;margin-top:.5rem">${inactivos.length} membresía(s) vencida(s)</div>`;
+  } else if(r==='trainer'){
+    alertHTML+=`<div style="font-size:12px;color:var(--muted);line-height:2">
+      <div>💡 Recuerda registrar medidas mensuales</div>
+      <div>📋 Actualiza los kg de tus clientes</div>
+      <div>📅 Revisa la asistencia semanal</div>
+    </div>`;
+  } else {
+    const tr=USERS.find(u=>u.id===CU.trainerId);
+    alertHTML+=`<div style="font-size:12px;color:var(--muted);line-height:2.2">
+      <div>🎯 Objetivo: <b style="color:var(--light)">${CU.obj}</b></div>
+      <div>📅 Frecuencia: <b style="color:var(--light)">${CU.dias}</b></div>
+      <div>🏆 Entrenador: <b style="color:var(--y)">${tr?tr.name:'Sin asignar'}</b></div>
+      ${CU.obs?`<div>📝 <i style="color:var(--muted)">"${CU.obs}"</i></div>`:''}
+    </div>`;
+  }
+  $('dash-alerts').innerHTML=alertHTML;
+
+  // Bottom table
+  let tableHTML='';
+  if(r!=='client'){
+    tableHTML=`<div class="card-h"><h3>Lista de Clientes</h3></div><div class="tw"><table><thead><tr><th>Cliente</th><th>Objetivo</th><th>Entrenador</th><th>Estado</th><th>Días</th></tr></thead><tbody>`;
+    myClients.forEach(u=>{
+      const tr2=USERS.find(x=>x.id===u.trainerId);
+      tableHTML+=`<tr><td><div class="av-row"><div class="av-sm" style="background:${avColor(u.id)}">${ini(u.name)}</div>${u.name}</div></td><td><span class="tag">${u.obj}</span></td><td>${tr2?tr2.name.split(' ')[0]:'—'}</td><td><span class="badge ${u.active?'b-active':'b-admin'}">${u.active?'Activo':'Inactivo'}</span></td><td>${u.dias}</td></tr>`;
+    });
+    tableHTML+='</tbody></table></div>';
+  } else {
+    const m=MEDIDAS[CU.id]||[];
+    if(m.length>1){
+      tableHTML=`<div class="card-h"><h3>Historial de Medidas</h3></div><div class="tw"><table><thead><tr><th>Fecha</th><th>Peso</th><th>Cintura</th><th>Brazo</th><th>% Grasa</th></tr></thead><tbody>`;
+      [...m].reverse().forEach(x=>{tableHTML+=`<tr><td>${x.fecha}</td><td>${x.peso} kg</td><td>${x.cintura} cm</td><td>${x.brazo} cm</td><td>${x.grasa}%</td></tr>`});
+      tableHTML+='</tbody></table></div>';
+    }
+  }
+  $('dash-table').innerHTML=tableHTML;
+  $('dash-table').style.display=tableHTML?'block':'none';
+}
+
+// ═══════════════════════════════════════
+// CLIENTES
+// ═══════════════════════════════════════
+function renderClientes(){
+  const r=CU.role;
+  $('tb-title').textContent=r==='trainer'?'Mis Clientes':'Gestión de Clientes';
+  $('tb-sub').textContent=r==='trainer'?`${USERS.filter(u=>u.role==='client'&&u.trainerId===CU.id).length} clientes asignados`:'Administra todos los miembros';
+  $('tb-actions').innerHTML=r!=='client'?`<button class="btn btn-y" onclick="openAddUser()">+ Nuevo Cliente</button>`:'';
+
+  const list=r==='admin'?USERS:USERS.filter(u=>u.role==='client'&&u.trainerId===CU.id);
+  let html=`<div class="card-h"><h3>Usuarios del Sistema</h3><span style="font-size:12px;color:var(--muted)">${list.length} registros</span></div>`;
+  html+=`<div class="tw"><table><thead><tr><th>Nombre</th><th>Rol</th><th>Objetivo</th><th>Entrenador</th><th>Días</th><th>Edad</th><th>Estado</th>${r==='admin'?'<th>Acciones</th>':''}</tr></thead><tbody>`;
+  list.forEach(u=>{
+    const tr2=USERS.find(x=>x.id===u.trainerId);
+    const badgeClass=u.role==='admin'?'b-admin':u.role==='trainer'?'b-trainer':'b-client';
+    html+=`<tr>
+      <td><div class="av-row"><div class="av-sm" style="background:${avColor(u.id)}">${ini(u.name)}</div><div><div style="font-weight:600">${u.name}</div><div style="font-size:10px;color:var(--muted)">${u.email}</div></div></div></td>
+      <td><span class="badge ${badgeClass}">${u.role}</span></td>
+      <td><span class="tag">${u.obj}</span></td>
+      <td>${tr2?`<div class="av-row"><div class="av-sm" style="background:${avColor(tr2.id)};width:20px;height:20px;font-size:9px">${ini(tr2.name)}</div>${tr2.name.split(' ')[0]}</div>`:'<span style="color:var(--muted)">Sin asignar</span>'}</td>
+      <td>${u.dias}</td>
+      <td>${u.age||'—'}</td>
+      <td><span class="badge ${u.active?'b-active':'b-admin'}">${u.active?'Activo':'Inactivo'}</span></td>
+      ${r==='admin'?`<td style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" onclick="toggleActive(${u.id})">${u.active?'⏸':'▶'}</button>
+        ${u.id!==CU.id?`<button class="btn btn-red btn-sm" onclick="deleteUser(${u.id})">✕</button>`:''}
+      </td>`:''}
+    </tr>`;
+  });
+  html+='</tbody></table></div>';
+  $('cl-container').innerHTML=html;
+}
+
+function openAddUser(){
+  const trainers=USERS.filter(u=>u.role==='trainer');
+  $('mf-trainer').innerHTML='<option value="">Sin asignar</option>'+trainers.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
+  ['name','email','pass','obs'].forEach(f=>$('mf-'+f).value='');
+  ['role','obj','dias'].forEach(f=>{});
+  openModal('m-user');
+}
+function toggleTrainerField(){
+  $('mf-trainer-wrap').style.opacity=$('mf-role').value==='client'?'1':'0.4';
+}
+function saveUser(){
+  const name=$('mf-name').value.trim(),email=$('mf-email').value.trim();
+  if(!name||!email){notif('⚠️ Nombre y email requeridos');return}
+  const nu={id:nextId++,name,email,pass:$('mf-pass').value||'gym123',role:$('mf-role').value,obj:$('mf-obj').value,dias:$('mf-dias').value,age:parseInt($('mf-age').value)||0,peso:parseInt($('mf-peso').value)||0,talla:parseInt($('mf-talla').value)||0,trainerId:$('mf-trainer').value?parseInt($('mf-trainer').value):null,active:true,obs:$('mf-obs').value,joined:new Date().toISOString().split('T')[0]};
+  USERS.push(nu);closeModal('m-user');renderClientes();notif('✅ Usuario creado correctamente');
+}
+function deleteUser(id){if(!confirm('¿Eliminar este usuario?'))return;USERS=USERS.filter(u=>u.id!==id);renderClientes();notif('Usuario eliminado')}
+function toggleActive(id){const u=USERS.find(x=>x.id===id);if(u)u.active=!u.active;renderClientes();notif(u.active?'✅ Activado':'⏸ Desactivado')}
+
+// ═══════════════════════════════════════
+// PROGRAMA
+// ═══════════════════════════════════════
+function renderPrograma(){
+  $('tb-title').textContent=CU.role==='client'?'Mi Programa':'Programa de Entrenamiento';
+  const tr=CU.role==='client'?USERS.find(u=>u.id===CU.trainerId):null;
+  $('tb-sub').textContent=CU.role==='client'?`Entrenador: ${tr?tr.name:'Sin asignar'}`:'Editor de rutinas';
+  $('tb-actions').innerHTML='';
+
+  const days=['Lunes','Martes','Miércoles','Jueves','Viernes'];
+  $('prog-tabs').innerHTML=days.map((d,i)=>`<button class="btn ${i===0?'btn-y':'btn-outline'}" onclick="setDay(this,'${d}')" style="padding:6px 12px">${d}</button>`).join('');
+
+  renderProgDay('Lunes');
+}
+function setDay(el,day){
+  document.querySelectorAll('#prog-tabs .btn').forEach(b=>{b.className='btn btn-outline';b.style.padding='6px 12px'});
+  el.className='btn btn-y';el.style.padding='6px 12px';
+  renderProgDay(day);
+}
+function renderProgDay(day){
+  let html=`<div style="font-size:10px;color:var(--muted);margin-bottom:.75rem;letter-spacing:1px;text-transform:uppercase">Rutina del ${day} — Semana actual</div>`;
+  PROGRAMAS.default.forEach(sec=>{
+    html+=`<div class="card prog-sec"><div class="prog-sec-hd">${sec.sec}</div>`;
+    html+=`<div class="ex-header"><div>Ejercicio</div><div style="text-align:center">Series</div><div style="text-align:center">Reps</div><div style="text-align:center">Kg</div><div style="text-align:center">Obs.</div></div>`;
+    sec.exs.forEach((ex,i)=>{
+      const isNum=ex.kg!=='—';
+      html+=`<div class="ex-row">
+        <div class="ex-name">${ex.n}</div>
+        <div class="ex-hi">${ex.s}</div>
+        <div class="ex-v">${ex.r}</div>
+        <div class="ex-v">${isNum&&CU.role!=='client'?`<input class="kg-input" value="${ex.kg}" onchange="updateKg(event,'${sec.sec}',${i})" />`:`<span style="${isNum?'color:var(--y);font-weight:700;font-family:Barlow Condensed,sans-serif':''}">${ex.kg}</span>`}</div>
+        <div class="ex-obs">${ex.obs}</div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  $('prog-body').innerHTML=html;
+}
+function updateKg(e,sec,idx){
+  const s=PROGRAMAS.default.find(x=>x.sec===sec);
+  if(s)s.exs[idx].kg=e.target.value;
+  notif('💾 Kg actualizado');
+}
+
+// ═══════════════════════════════════════
+// MEDIDAS
+// ═══════════════════════════════════════
+function renderMedidas(){
+  $('tb-title').textContent=CU.role==='client'?'Mis Medidas':'Registro de Medidas';
+  $('tb-sub').textContent='Seguimiento corporal';
+  const targetId=CU.role==='client'?CU.id:(MEDIDAS[5]?5:null);
+
+  if(CU.role!=='client'){
+    // Selector de cliente
+    const clients=CU.role==='admin'?USERS.filter(u=>u.role==='client'):USERS.filter(u=>u.role==='client'&&u.trainerId===CU.id);
+    $('tb-actions').innerHTML=`<select id="med-client-sel" class="fld" style="background:var(--g2);border:1px solid var(--g3);color:var(--light);padding:6px 10px;border-radius:var(--r);font-size:12px;margin:0" onchange="renderMedidasFor(parseInt(this.value))">
+      ${clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}
+    </select>
+    <button class="btn btn-y" onclick="openModal('m-med')">+ Registrar</button>`;
+    renderMedidasFor(clients[0]?.id);
+  } else {
+    $('tb-actions').innerHTML=`<button class="btn btn-y" onclick="openModal('m-med')">+ Registrar</button>`;
+    renderMedidasFor(CU.id);
+  }
+}
+function renderMedidasFor(uid){
+  const m=(MEDIDAS[uid]||[]);const last=m[m.length-1];const prev=m[m.length-2];
+  const user=USERS.find(u=>u.id===uid);
+  const delta=(a,b,fld,inv=false)=>{if(!b||a===undefined)return'';const d=+(a[fld]-b[fld]).toFixed(1);if(d===0)return`<span style="color:var(--muted)">= sin cambio</span>`;const good=inv?d<0:d>0;return`<span style="color:${good?'var(--green)':'var(--red)'}">${d>0?'+':''}${d}</span>`};
+  let html='';
+  if(!last){html=`<div class="card" style="text-align:center;padding:2rem"><div style="font-size:2rem;margin-bottom:.5rem">📏</div><p style="color:var(--muted)">Sin medidas registradas para ${user?.name||'este cliente'}</p></div>`;$('med-body').innerHTML=html;return}
+
+  html+=`<div class="card"><div class="card-h"><h3>Última medición — ${last.fecha}</h3>${last.obs?`<span style="font-size:11px;color:var(--muted);font-style:italic">"${last.obs}"</span>`:''}</div>
+  <div class="med-grid">
+    <div class="med-it"><label>Peso</label><div class="med-val">${last.peso}<span>kg</span></div><div class="med-delta">${delta(last,prev,'peso',true)}</div></div>
+    <div class="med-it"><label>% Grasa</label><div class="med-val">${last.grasa}<span>%</span></div><div class="med-delta">${delta(last,prev,'grasa',true)}</div></div>
+    <div class="med-it"><label>% Músculo</label><div class="med-val">${last.musculo}<span>%</span></div><div class="med-delta">${delta(last,prev,'musculo')}</div></div>
+    <div class="med-it"><label>Pecho</label><div class="med-val">${last.pecho}<span>cm</span></div><div class="med-delta">${delta(last,prev,'pecho',true)}</div></div>
+    <div class="med-it"><label>Cintura</label><div class="med-val">${last.cintura}<span>cm</span></div><div class="med-delta">${delta(last,prev,'cintura',true)}</div></div>
+    <div class="med-it"><label>Cadera</label><div class="med-val">${last.cadera}<span>cm</span></div><div class="med-delta">${delta(last,prev,'cadera',true)}</div></div>
+    <div class="med-it"><label>Brazo</label><div class="med-val">${last.brazo}<span>cm</span></div><div class="med-delta">${delta(last,prev,'brazo')}</div></div>
+    <div class="med-it"><label>Muslo</label><div class="med-val">${last.muslo}<span>cm</span></div><div class="med-delta">${delta(last,prev,'muslo')}</div></div>
+  </div></div>`;
+
+  if(m.length>=2){
+    const first=m[0];
+    const dp=(a,b,fld,inv=false)=>{const d=+(a[fld]-b[fld]).toFixed(1);if(d===0)return'=';const good=inv?d<0:d>0;return`<span style="color:${good?'var(--green)':'var(--red)'}">${d>0?'+':''}${d}</span>`};
+    html+=`<div class="card"><div class="card-h"><h3>Progreso Total (${first.fecha} → ${last.fecha})</h3></div>
+    <div class="med-grid">
+      <div class="med-it"><label>Peso perdido</label><div class="med-val" style="color:${last.peso<first.peso?'var(--green)':'var(--red)'}">${(last.peso-first.peso).toFixed(1)}<span>kg</span></div></div>
+      <div class="med-it"><label>Grasa</label><div class="med-val" style="color:${last.grasa<first.grasa?'var(--green)':'var(--red)'}">${(last.grasa-first.grasa).toFixed(1)}<span>%</span></div></div>
+      <div class="med-it"><label>Músculo</label><div class="med-val" style="color:${last.musculo>first.musculo?'var(--green)':'var(--red)'}">${(+(last.musculo-first.musculo).toFixed(1))>0?'+':''}${(last.musculo-first.musculo).toFixed(1)}<span>%</span></div></div>
+      <div class="med-it"><label>Cintura</label><div class="med-val" style="color:${last.cintura<first.cintura?'var(--green)':'var(--red)'}">${(+(last.cintura-first.cintura)).toFixed(1)}<span>cm</span></div></div>
+    </div></div>`;
+
+    html+=`<div class="card"><div class="card-h"><h3>Historial completo</h3></div><div class="tw"><table><thead><tr><th>Fecha</th><th>Peso</th><th>% Grasa</th><th>Cintura</th><th>Brazo</th><th>Observaciones</th></tr></thead><tbody>`;
+    [...m].reverse().forEach(x=>{html+=`<tr><td>${x.fecha}</td><td>${x.peso} kg</td><td>${x.grasa}%</td><td>${x.cintura} cm</td><td>${x.brazo} cm</td><td style="color:var(--muted);font-size:11px">${x.obs||'—'}</td></tr>`});
+    html+='</tbody></table></div></div>';
+  }
+  $('med-body').innerHTML=html;
+}
+function saveMed(){
+  const uid=CU.role==='client'?CU.id:(parseInt($('med-client-sel')?.value)||5);
+  if(!MEDIDAS[uid])MEDIDAS[uid]=[];
+  const today=new Date().toISOString().split('T')[0];
+  MEDIDAS[uid].push({fecha:today,peso:+$('mm-peso').value||0,grasa:+$('mm-grasa').value||0,musculo:+$('mm-musculo').value||0,pecho:+$('mm-pecho').value||0,cintura:+$('mm-cintura').value||0,cadera:+$('mm-cadera').value||0,brazo:+$('mm-brazo').value||0,muslo:+$('mm-muslo').value||0,panto:+$('mm-panto').value||0,obs:$('mm-obs').value});
+  closeModal('m-med');renderMedidas();notif('✅ Medidas guardadas correctamente');
+}
+
+// ═══════════════════════════════════════
+// ASISTENCIA
+// ═══════════════════════════════════════
+function renderAsistencia(){
+  $('tb-title').textContent='Asistencia';$('tb-sub').textContent='Control mensual';$('tb-actions').innerHTML='';
+  const uid=CU.role==='client'?CU.id:5;
+  const data=ASISTENCIA[uid]||{};
+  const months=Object.keys(data);
+  let html='';
+  months.forEach(mes=>{
+    const days=data[mes];
+    const present=days.filter(x=>x===1).length;
+    const pct=Math.round(present/days.length*100);
+    html+=`<div class="card"><div class="card-h"><h3>${mes}</h3><div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:var(--muted)">${present}/${days.length} días</span><span style="color:var(--y);font-weight:700;font-family:'Barlow Condensed',sans-serif">${pct}%</span></div></div>`;
+    html+=`<div class="pbar" style="margin-bottom:1rem"><div class="pbar-f" style="width:${pct}%"></div></div>`;
+    html+=`<div class="asist-grid">`;
+    days.forEach((d,i)=>{
+      html+=`<div class="asist-day ${d===1?'present':'absent'}"><span class="num">${i+1}</span>${d===1?'✓':'·'}</div>`;
+    });
+    html+=`</div></div>`;
+  });
+  $('asist-body').innerHTML=html||`<div class="card" style="text-align:center;padding:2rem;color:var(--muted)">Sin registro de asistencia</div>`;
+}
+
+// ═══════════════════════════════════════
+// ENTRENADORES
+// ═══════════════════════════════════════
+function renderEntrenadores(){
+  $('tb-title').textContent='Entrenadores';$('tb-sub').textContent='Equipo de profesionales';
+  $('tb-actions').innerHTML=`<button class="btn btn-y" onclick="openAddUser()">+ Nuevo Entrenador</button>`;
+  const trainers=USERS.filter(u=>u.role==='trainer');
+  const clients=USERS.filter(u=>u.role==='client');
+  $('tr-stats').innerHTML=`
+    <div class="scard"><div class="n">${trainers.length}</div><div class="l">Entrenadores</div></div>
+    <div class="scard"><div class="n">${clients.length}</div><div class="l">Clientes totales</div></div>
+    <div class="scard"><div class="n">${clients.filter(c=>c.trainerId).length}</div><div class="l">Asignados</div></div>
+    <div class="scard"><div class="n">${clients.filter(c=>!c.trainerId).length}</div><div class="l">Sin entrenador</div></div>
+  `;
+  let html='';
+  trainers.forEach(tr=>{
+    const mc=clients.filter(c=>c.trainerId===tr.id);
+    html+=`<div class="trainer-card">
+      <div class="trainer-head">
+        <div class="av" style="width:44px;height:44px;font-size:16px;background:${avColor(tr.id)}">${ini(tr.name)}</div>
+        <div>
+          <div style="font-weight:700;font-size:15px">${tr.name}</div>
+          <div style="font-size:11px;color:var(--muted)">${tr.email}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${tr.obs}</div>
+        </div>
+        <div style="margin-left:auto;text-align:right">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--y);line-height:1">${mc.length}</div>
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">clientes</div>
+        </div>
+      </div>
+      <div class="trainer-clients">
+        ${mc.length?mc.map(c=>`<div class="client-chip"><div class="av-sm" style="background:${avColor(c.id)};width:18px;height:18px;font-size:9px">${ini(c.name)}</div>${c.name}</div>`).join(''):`<span style="color:var(--muted);font-size:12px">Sin clientes asignados</span>`}
+      </div>
+    </div>`;
+  });
+  $('tr-body').innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// REPORTES
+// ═══════════════════════════════════════
+function renderReportes(){
+  $('tb-title').textContent='Reportes';$('tb-sub').textContent='Estadísticas del gimnasio';$('tb-actions').innerHTML='';
+  const clients=USERS.filter(u=>u.role==='client');
+  const objetivos={};clients.forEach(c=>{objetivos[c.obj]=(objetivos[c.obj]||0)+1});
+  const maxO=Math.max(...Object.values(objetivos));
+  let objBars=Object.entries(objetivos).map(([k,v])=>`<div class="bar-col"><div class="bar-val">${v}</div><div class="bar-fill" style="height:${Math.round(v/maxO*80)}px"></div><div class="bar-lbl" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60px;font-size:8px">${k}</div></div>`).join('');
+
+  const trainers=USERS.filter(u=>u.role==='trainer');
+  const maxC=Math.max(...trainers.map(t=>clients.filter(c=>c.trainerId===t.id).length));
+  let trBars=trainers.map(t=>{const n=clients.filter(c=>c.trainerId===t.id).length;return`<div class="bar-col"><div class="bar-val">${n}</div><div class="bar-fill" style="height:${maxC>0?Math.round(n/maxC*80):4}px;background:${avColor(t.id)}"></div><div class="bar-lbl">${t.name.split(' ')[0]}</div></div>`}).join('');
+
+  $('rep-body').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div class="card"><div class="card-h"><h3>Objetivos de Clientes</h3></div>
+        <div class="chart-bar">${objBars}</div>
+      </div>
+      <div class="card"><div class="card-h"><h3>Clientes por Entrenador</h3></div>
+        <div class="chart-bar">${trBars}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem">
+      <div class="card"><div class="card-h"><h3>Estado Membresías</h3></div>
+        <div style="text-align:center;padding:.5rem 0">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:2.5rem;font-weight:900;color:var(--green)">${clients.filter(c=>c.active).length}</div>
+          <div style="font-size:11px;color:var(--muted)">Activos</div>
+          <div style="margin-top:.5rem;font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--red)">${clients.filter(c=>!c.active).length}</div>
+          <div style="font-size:11px;color:var(--muted)">Vencidos</div>
+        </div>
+      </div>
+      <div class="card"><div class="card-h"><h3>Frecuencia promedio</h3></div>
+        <div style="text-align:center;padding:1rem 0">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;color:var(--y)">3.4</div>
+          <div style="font-size:11px;color:var(--muted)">días / semana</div>
+          <div class="pbar" style="margin-top:.75rem"><div class="pbar-f" style="width:68%"></div></div>
+        </div>
+      </div>
+      <div class="card"><div class="card-h"><h3>Asistencia este mes</h3></div>
+        <div style="text-align:center;padding:1rem 0">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;color:var(--blue)">78%</div>
+          <div style="font-size:11px;color:var(--muted)">promedio general</div>
+          <div class="pbar" style="margin-top:.75rem"><div class="pbar-f" style="width:78%;background:var(--blue)"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card"><div class="card-h"><h3>Incorporaciones por mes (2026)</h3></div>
+      <div class="chart-bar">
+        ${['Ene','Feb','Mar','Abr','May','Jun'].map((m,i)=>{const n=[2,1,3,1,0,0][i];return`<div class="bar-col"><div class="bar-val">${n}</div><div class="bar-fill" style="height:${n?Math.round(n/3*80):4}px;background:var(--blue)"></div><div class="bar-lbl">${m}</div></div>`}).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════
+// PERFIL
+// ═══════════════════════════════════════
+function renderPerfil(){
+  $('tb-title').textContent='Mi Perfil';$('tb-sub').textContent='Información personal';$('tb-actions').innerHTML='';
+  const u=CU;const tr=USERS.find(x=>x.id===u.trainerId);
+  $('perf-body').innerHTML=`
+    <div class="profile-head">
+      <div class="av-lg" style="background:${avColor(u.id)}">${ini(u.name)}</div>
+      <div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">${u.role}</div>
+        <div class="profile-name">${u.name}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">${u.email}</div>
+      </div>
+      <span class="badge ${u.active?'b-active':'b-admin'}" style="margin-left:auto">${u.active?'Activo':'Inactivo'}</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div class="card"><div class="card-h"><h3>Datos físicos</h3></div>
+        <div class="med-grid" style="grid-template-columns:1fr 1fr">
+          <div class="med-it"><label>Edad</label><div class="med-val">${u.age||'—'}<span>${u.age?'años':''}</span></div></div>
+          <div class="med-it"><label>Peso inicial</label><div class="med-val">${u.peso||'—'}<span>${u.peso?'kg':''}</span></div></div>
+          <div class="med-it"><label>Talla</label><div class="med-val">${u.talla||'—'}<span>${u.talla?'cm':''}</span></div></div>
+          <div class="med-it"><label>IMC</label><div class="med-val">${u.peso&&u.talla?((u.peso/((u.talla/100)**2)).toFixed(1)):'—'}</div></div>
+        </div>
+      </div>
+      <div class="card"><div class="card-h"><h3>Plan de entrenamiento</h3></div>
+        <div style="font-size:13px;line-height:2.5;color:var(--muted)">
+          <div>🎯 Objetivo: <span style="color:var(--light);font-weight:600">${u.obj}</span></div>
+          <div>📅 Frecuencia: <span style="color:var(--light);font-weight:600">${u.dias}</span></div>
+          ${tr?`<div>🏆 Entrenador: <span style="color:var(--y);font-weight:600">${tr.name}</span></div>`:''}
+          <div>📆 Miembro desde: <span style="color:var(--light);font-weight:600">${u.joined}</span></div>
+        </div>
+      </div>
+    </div>
+    ${u.obs?`<div class="card"><div class="card-h"><h3>Observaciones</h3></div><p style="font-size:13px;color:var(--muted);font-style:italic">"${u.obs}"</p></div>`:''}
+  `;
+}
+
+// ═══════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════
+function renderConfig(){
+  $('tb-title').textContent='Configuración';$('tb-sub').textContent='Personalización del sistema';
+  $('tb-actions').innerHTML=`<button class="btn btn-y" onclick="openCfg()">✏️ Editar</button>`;
+  $('cfg-body').innerHTML=`
+    <div class="card"><div class="card-h"><h3>Branding del Gimnasio</h3></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-size:13px">
+        <div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Nombre</div><div style="font-weight:600">${GYM.name}</div></div>
+        <div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Slogan</div><div style="font-weight:600">${GYM.slogan}</div></div>
+        <div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Dirección</div><div style="font-weight:600">${GYM.address}</div></div>
+        <div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Teléfono</div><div style="font-weight:600">${GYM.tel}</div></div>
+        <div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Email</div><div style="font-weight:600">${GYM.email}</div></div>
+      </div>
+    </div>
+    <div class="card"><div class="card-h"><h3>Arquitectura del Sistema</h3></div>
+      <div style="font-size:12px;color:var(--muted);line-height:2.5">
+        <div>⚡ Frontend: <span style="color:var(--light)">React + Next.js + Tailwind CSS</span></div>
+        <div>🗄️ Base de datos: <span style="color:var(--light)">PostgreSQL via Supabase</span></div>
+        <div>🔐 Autenticación: <span style="color:var(--light)">JWT con roles (admin/trainer/client)</span></div>
+        <div>📱 Móvil: <span style="color:var(--light)">PWA → Capacitor (Android + iOS)</span></div>
+        <div>🚀 Deploy: <span style="color:var(--light)">Vercel (web) + Play Store / App Store</span></div>
+        <div>💾 Storage: <span style="color:var(--light)">Supabase Storage (fotos, documentos)</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="card-h"><h3>Cuentas Demo</h3></div>
+      <div class="tw"><table><thead><tr><th>Rol</th><th>Email</th><th>Contraseña</th></tr></thead><tbody>
+        <tr><td><span class="badge b-admin">Admin</span></td><td>admin@gym.com</td><td>admin123</td></tr>
+        <tr><td><span class="badge b-trainer">Trainer</span></td><td>marco@gym.com</td><td>gym123</td></tr>
+        <tr><td><span class="badge b-client">Cliente</span></td><td>client@gym.com</td><td>client123</td></tr>
+      </tbody></table></div>
+    </div>
+  `;
+}
+function openCfg(){
+  $('cfg-name').value=GYM.name;$('cfg-slogan').value=GYM.slogan;$('cfg-addr').value=GYM.address;$('cfg-tel').value=GYM.tel;$('cfg-email').value=GYM.email;
+  openModal('m-cfg');
+}
+function saveCfg(){
+  GYM.name=$('cfg-name').value||GYM.name;GYM.slogan=$('cfg-slogan').value||GYM.slogan;GYM.address=$('cfg-addr').value;GYM.tel=$('cfg-tel').value;GYM.email=$('cfg-email').value;
+  $('sb-gym-name').textContent=GYM.name;$('sb-gym-sub').textContent=GYM.slogan;$('gym-login-name').textContent=GYM.name;
+  closeModal('m-cfg');renderConfig();notif('✅ Configuración guardada');
+}
+</script>
+</body>
+</html>
